@@ -45,7 +45,7 @@ const savePicture = async (req, res) => {
         const result = await new PictureModel(picture).save()
 
         //TODO... Add to AWS Rekognition
-        return res.status(200).json({ success: true, data: 'Upload complete' })
+        return res.status(200).json({ success: true, data: 'Upload complete', picture:picture})
     }catch (e) {
         return res.status(500).json({success: false, data: e})
     }

@@ -3,7 +3,8 @@ require("dotenv").config()
 import express from 'express'
 import multer from "multer";
 import multerS3 from "multer-s3-transform";
-import uuid from "uuid/v4";
+import { v4 as uuidv4 } from 'uuid';
+
 import aws from 'aws-sdk'
 import { savePicture } from "./database"
 
@@ -16,7 +17,7 @@ const s3 = new aws.S3({
 })
 
 const setMetadata = file => ({filename: file.originalname})
-const setKey = file => `${uuid()}${file.originalname.substring(file.originalname.lastIndexOf("."))}`;
+const setKey = file => `${uuidv4()}${file.originalname.substring(file.originalname.lastIndexOf("."))}`;
 
 const upload = () =>
     multer({
