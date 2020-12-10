@@ -25,4 +25,31 @@ const PictureSchema = new Schema({
 
 const PictureModel = new model("Picture", PictureSchema)
 
-export { connectToDatabase, PictureModel }
+const savePicture = async (req, res) => {
+    try {
+        const originalFile = req.file
+        if(!originalFile) {
+            throw new Error('Unable to find original file!')
+        }
+
+        const { originalname, mimetype } = originalFile
+        const picture = {
+              filename: originalname,
+              mimeType: mimetype,
+              bucket: originalFile.bucket,
+              contentType: originalFile.contentType,
+              location: originalFile.location,
+              etag: originalFile.etag
+        }
+
+        const result = await new PictureModel(picture).save()
+
+        //TODO... Add to AWS Rekognition
+        return res.status(200).json({ success: true, data: 'Upload complete' })
+    }catch (e) {
+        return res.status(500).json({success: false, data: e})
+    }
+
+}
+
+export { connectToDatabase, savePicture, PictureModel }
