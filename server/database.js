@@ -1,4 +1,6 @@
 import { model, Schema, connect } from 'mongoose'
+import { addImageToCollection } from './faceRecognition'
+
 
 const connectToDatabase = async () => await connect(
     process.env.DB_CONNECTION_STRING || '',
@@ -44,7 +46,12 @@ const savePicture = async (req, res) => {
 
         const result = await new PictureModel(picture).save()
 
-        //TODO... Add to AWS Rekognition
+        await addImageToCollection(
+            originalFile.bucket,
+            result._id.toString(),
+            originalFile.key
+        )
+
         return res.status(200).json({ success: true, data: 'Upload complete', picture:picture})
     }catch (e) {
         return res.status(500).json({success: false, data: e})
